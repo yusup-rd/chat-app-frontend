@@ -1,11 +1,11 @@
 import RegisterForm from '@/components/Forms/RegisterForm';
 import Link from 'next/link';
-import BackButton from '@/components/Layout/BackButton';
+import Header from '@/components/Layout/Header';
 
 const Register = () => {
   return (
     <div className="radial-bg min-h-screen space-y-10">
-      <BackButton />
+      <Header />
 
       <div className="mx-10">
         <RegisterForm />

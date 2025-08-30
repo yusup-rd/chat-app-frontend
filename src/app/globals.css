@@ -10,6 +10,7 @@
   --bg-gradient-2: #0d1d23;
   --bg-gradient-3: #09141a;
   --link: #94783e;
+  --card: #0e191f;
 }
 
 @theme inline {
@@ -21,6 +22,7 @@
   --color-bg-gradient-2: var(--bg-gradient-2);
   --color-bg-gradient-3: var(--bg-gradient-3);
   --color-link: var(--link);
+  --color-card: var(--card);
 }
 
 body {
@@ -49,6 +51,13 @@ body {
     #f8fae5,
     #d5be88
   );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cyan-text {
+  background: linear-gradient(to bottom right, #abfffd, #4599db, #aadaff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

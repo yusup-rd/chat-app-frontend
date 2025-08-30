@@ -1,0 +1,36 @@
+import { FaHorse } from 'react-icons/fa6';
+import { TbZodiacAries } from 'react-icons/tb';
+
+interface HeroProps {
+  username: string;
+  pictureUrl?: string;
+  age?: number;
+  gender?: string;
+  horoscope?: string;
+  zodiac?: string;
+}
+
+const Hero = ({ username, pictureUrl, age, gender, horoscope, zodiac }: HeroProps) => {
+  return (
+    <div className="flex h-48 flex-col justify-end rounded-2xl bg-[#162329] p-3">
+      <div className="flex flex-col gap-2">
+        <p className="font-bold">{age ? `@${username}, ${age}` : `@${username}`}</p>
+        {gender && <p className="text-sm capitalize">{gender}</p>}
+        {horoscope && zodiac && (
+          <div className="flex items-center gap-3">
+            <div className="flex w-fit items-center gap-1 rounded-full bg-white/50 px-4 py-2">
+              <TbZodiacAries className="size-5" />
+              <p className="text-sm font-semibold capitalize">{horoscope}</p>
+            </div>
+            <div className="flex w-fit items-center gap-1 rounded-full bg-white/50 px-4 py-2">
+              <FaHorse className="size-5" />
+              <p className="text-sm font-semibold capitalize">{zodiac}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Hero;

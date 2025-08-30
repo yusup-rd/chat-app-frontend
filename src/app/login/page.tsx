@@ -1,11 +1,11 @@
 import LoginForm from '@/components/Forms/LoginForm';
-import BackButton from '@/components/Layout/BackButton';
+import Header from '@/components/Layout/Header';
 import Link from 'next/link';
 
 const Login = () => {
   return (
     <div className="radial-bg min-h-screen space-y-10">
-      <BackButton />
+      <Header />
 
       <div className="mx-10">
         <LoginForm />
