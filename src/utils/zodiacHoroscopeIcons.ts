@@ -28,7 +28,7 @@ import {
 } from 'react-icons/fa6';
 
 // Horoscope icon mapping
-export const horoscopeIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+const horoscopeIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   aries: TbZodiacAries,
   taurus: TbZodiacTaurus,
   gemini: TbZodiacGemini,
@@ -44,7 +44,7 @@ export const horoscopeIconMap: Record<string, React.ComponentType<{ className?: 
 };
 
 // Zodiac icon mapping
-export const zodiacIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+const zodiacIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   horse: FaHorse,
   pig: FaPiggyBank,
   dragon: FaDragon,
