@@ -1,25 +1,27 @@
 'use client';
 
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { loginValidationSchema } from '@/utils/validation';
 import { useState } from 'react';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
-    username: '',
+    usernameOrEmail: '',
     password: '',
   };
 
   const handleSubmit = (values: typeof initialValues) => {
-    console.log(values);
+    toast.info('Login clicked with values: ' + JSON.stringify(values));
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={}
+      validationSchema={loginValidationSchema}
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, isValid, dirty }) => (
@@ -30,13 +32,17 @@ const LoginForm = () => {
           <div className="flex flex-col gap-3">
             <Field
               type="text"
-              id="username"
-              name="username"
+              id="usernameOrEmail"
+              name="usernameOrEmail"
               placeholder="Enter Username/Email"
               autoComplete="on"
               className="rounded-lg bg-white/6 px-5 py-3 text-sm font-medium"
             />
-            <ErrorMessage name="username" component="div" className="mt-1 text-sm text-red-500" />
+            <ErrorMessage
+              name="usernameOrEmail"
+              component="div"
+              className="mt-1 text-sm text-red-500"
+            />
           </div>
 
           {/* Password */}
@@ -66,7 +72,7 @@ const LoginForm = () => {
           <button
             type="submit"
             disabled={isSubmitting || !isValid || !dirty}
-            className="from-primary-gradient-1 to-primary-gradient-2 rounded-lg bg-gradient-to-r px-5 py-3 font-bold duration-200 not-disabled:cursor-pointer disabled:opacity-50 not-disabled:hover:shadow-[0_2px_6px_-2px_var(--primary-gradient-1),0_4px_8px_-4px_var(--primary-gradient-2)]"
+            className="from-primary-gradient-1 to-primary-gradient-2 rounded-lg bg-gradient-to-r px-5 py-3 font-bold duration-200 not-disabled:cursor-pointer not-disabled:hover:shadow-[0_2px_6px_-2px_var(--primary-gradient-1),0_4px_8px_-4px_var(--primary-gradient-2)] disabled:opacity-50"
           >
             {isSubmitting ? 'Logging in...' : 'Login'}
           </button>
