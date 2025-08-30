@@ -1,5 +1,4 @@
-import { FaHorse } from 'react-icons/fa6';
-import { TbZodiacAries } from 'react-icons/tb';
+import { getHoroscopeIcon, getZodiacIcon } from '../../utils/zodiacHoroscopeIcons';
 
 interface HeroProps {
   username: string;
@@ -11,6 +10,18 @@ interface HeroProps {
 }
 
 const Hero = ({ username, pictureUrl, age, gender, horoscope, zodiac }: HeroProps) => {
+  function renderHoroscopeIcon(horoscope?: string) {
+    if (!horoscope) return null;
+    const HoroscopeIcon = getHoroscopeIcon(horoscope);
+    return HoroscopeIcon ? <HoroscopeIcon className="size-5" /> : null;
+  }
+
+  function renderZodiacIcon(zodiac?: string) {
+    if (!zodiac) return null;
+    const ZodiacIcon = getZodiacIcon(zodiac);
+    return ZodiacIcon ? <ZodiacIcon className="size-5" /> : null;
+  }
+
   return (
     <div
       className={`flex h-48 flex-col justify-end rounded-2xl p-3 ${
@@ -24,11 +35,11 @@ const Hero = ({ username, pictureUrl, age, gender, horoscope, zodiac }: HeroProp
         {horoscope && zodiac && (
           <div className="flex items-center gap-3">
             <div className="flex w-fit items-center gap-1 rounded-full bg-white/50 px-4 py-2">
-              <TbZodiacAries className="size-5" />
+              {renderHoroscopeIcon(horoscope)}
               <p className="text-sm font-semibold capitalize">{horoscope}</p>
             </div>
             <div className="flex w-fit items-center gap-1 rounded-full bg-white/50 px-4 py-2">
-              <FaHorse className="size-5" />
+              {renderZodiacIcon(zodiac)}
               <p className="text-sm font-semibold capitalize">{zodiac}</p>
             </div>
           </div>
