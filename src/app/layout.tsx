@@ -16,14 +16,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <ToastContainer
-        autoClose={3000}
-        closeOnClick
-        pauseOnHover
-        draggable
-        style={{ fontFamily: 'inherit' }}
-      />
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ToastContainer
+          autoClose={3000}
+          closeOnClick
+          pauseOnHover
+          draggable
+          style={{ fontFamily: 'inherit' }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

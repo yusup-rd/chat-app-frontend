@@ -28,3 +28,28 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+.radial-bg {
+  background: radial-gradient(
+    circle at top right,
+    var(--bg-gradient-1),
+    var(--bg-gradient-2),
+    var(--bg-gradient-3)
+  );
+}
+
+.gold-text {
+  background: linear-gradient(
+    to right,
+    #94783e,
+    #f3eda6,
+    #f8fae5,
+    #ffe2be,
+    #d5be88,
+    #f8fae5,
+    #d5be88
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -41,7 +41,7 @@ const LoginForm = () => {
             <ErrorMessage
               name="usernameOrEmail"
               component="div"
-              className="mt-1 text-sm text-red-500"
+              className="mt-1 text-xs text-red-500"
             />
           </div>
 
@@ -65,7 +65,7 @@ const LoginForm = () => {
                 {showPassword ? <LuEye className="size-5" /> : <LuEyeClosed className="size-5" />}
               </button>
             </div>
-            <ErrorMessage name="password" component="div" className="mt-1 text-sm text-red-500" />
+            <ErrorMessage name="password" component="div" className="mt-1 text-xs text-red-500" />
           </div>
 
           {/* Submit Button */}

@@ -1,21 +1,19 @@
 import * as Yup from 'yup';
 
-export const usernameValidation = Yup.string()
+const usernameValidation = Yup.string()
   .min(3, 'Username must be at least 3 characters')
   .max(20, 'Username must be at most 20 characters')
   .matches(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores')
   .required('Username is required');
 
-export const emailValidation = Yup.string()
-  .email('Invalid email address')
-  .required('Email is required');
+const emailValidation = Yup.string().email('Invalid email address').required('Email is required');
 
-export const passwordValidation = Yup.string()
+const passwordValidation = Yup.string()
   .min(6, 'Password must be at least 6 characters')
   .max(32, 'Password must be at most 32 characters')
   .required('Password is required');
 
-export const usernameOrEmailValidation = Yup.string()
+const usernameOrEmailValidation = Yup.string()
   .test('username-or-email', 'Enter a valid username or email', function (value) {
     if (!value) return false;
     const isEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value);
@@ -24,7 +22,18 @@ export const usernameOrEmailValidation = Yup.string()
   })
   .required('Username or Email is required');
 
+const confirmPasswordValidation = Yup.string()
+  .oneOf([Yup.ref('password'), undefined], 'Passwords must match')
+  .required('Confirm Password is required');
+
 export const loginValidationSchema = Yup.object({
   usernameOrEmail: usernameOrEmailValidation,
   password: passwordValidation,
+});
+
+export const registerValidationSchema = Yup.object({
+  email: emailValidation,
+  username: usernameValidation,
+  password: passwordValidation,
+  confirmPassword: confirmPasswordValidation,
 });
