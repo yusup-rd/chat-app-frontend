@@ -12,7 +12,12 @@ interface HeroProps {
 
 const Hero = ({ username, pictureUrl, age, gender, horoscope, zodiac }: HeroProps) => {
   return (
-    <div className="flex h-48 flex-col justify-end rounded-2xl bg-[#162329] p-3">
+    <div
+      className={`flex h-48 flex-col justify-end rounded-2xl p-3 ${
+        !pictureUrl ? 'bg-[#162329]' : 'bg-cover bg-center'
+      }`}
+      style={pictureUrl ? { backgroundImage: `url(${pictureUrl})` } : {}}
+    >
       <div className="flex flex-col gap-2">
         <p className="font-bold">{age ? `@${username}, ${age}` : `@${username}`}</p>
         {gender && <p className="text-sm capitalize">{gender}</p>}
