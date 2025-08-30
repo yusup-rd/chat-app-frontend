@@ -1,0 +1,79 @@
+'use client';
+
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useState } from 'react';
+import { LuEye, LuEyeClosed } from 'react-icons/lu';
+
+const LoginForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const initialValues = {
+    username: '',
+    password: '',
+  };
+
+  const handleSubmit = (values: typeof initialValues) => {
+    console.log(values);
+  };
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      // validationSchema={}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting, isValid, dirty }) => (
+        <Form className="flex w-full flex-col gap-5">
+          <h1 className="ml-3 text-2xl font-bold">Login</h1>
+
+          {/* Username */}
+          <div className="flex flex-col gap-3">
+            <Field
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter Username/Email"
+              autoComplete="on"
+              className="rounded-lg bg-white/6 px-5 py-3 text-sm font-medium"
+            />
+            <ErrorMessage name="username" component="div" className="mt-1 text-sm text-red-500" />
+          </div>
+
+          {/* Password */}
+          <div className="flex flex-col gap-2">
+            <div className="relative w-full">
+              <Field
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                autoComplete="on"
+                placeholder="Enter Password"
+                className="w-full rounded-lg bg-white/6 px-5 py-3 pr-12 text-sm font-medium"
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer p-1 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <LuEye className="size-5" /> : <LuEyeClosed className="size-5" />}
+              </button>
+            </div>
+            <ErrorMessage name="password" component="div" className="mt-1 text-sm text-red-500" />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting || !isValid || !dirty}
+            className="from-primary-gradient-1 to-primary-gradient-2 rounded-lg bg-gradient-to-r px-5 py-3 font-bold duration-200 not-disabled:cursor-pointer disabled:opacity-50 not-disabled:hover:shadow-[0_2px_6px_-2px_var(--primary-gradient-1),0_4px_8px_-4px_var(--primary-gradient-2)]"
+          >
+            {isSubmitting ? 'Logging in...' : 'Login'}
+          </button>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default LoginForm;
