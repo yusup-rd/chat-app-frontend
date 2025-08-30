@@ -1,4 +1,4 @@
-import { getHoroscopeIcon, getZodiacIcon } from '../../utils/zodiacHoroscopeIcons';
+import { getHoroscopeIcon, getZodiacIcon } from '../../utils/zodiacHoroscopeHelper';
 
 interface HeroProps {
   username: string;
