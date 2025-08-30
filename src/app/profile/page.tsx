@@ -18,7 +18,7 @@ const Profile = () => {
     <div>
       <Header username={mockUser.username} />
 
-      <div className="mx-2 md:mx-auto md:max-w-xl space-y-5">
+      <div className="mx-2 space-y-5 md:mx-auto md:max-w-xl">
         <Hero
           username={mockUser.username}
           age={mockUser.age}
