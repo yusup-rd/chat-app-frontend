@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
 import DateOfBirthDropdown from '../Layout/DateOfBirthDropdown';
 import { calculateHoroscope, calculateZodiac } from '@/utils/zodiacHoroscopeHelper';
+import { profileValidationSchema } from '@/utils/validation';
 
 type AboutFormProps = {
   initialValues: {
@@ -25,7 +26,12 @@ const AboutForm = forwardRef<FormikProps<AboutFormProps['initialValues']>, About
     const [genderOpen, setGenderOpen] = useState(false);
 
     return (
-      <Formik initialValues={initialValues} innerRef={formikRef} onSubmit={onSubmit}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={profileValidationSchema}
+        innerRef={formikRef}
+        onSubmit={onSubmit}
+      >
         {({ setFieldValue, values }) => {
           const horoscope = calculateHoroscope(values.dob);
           const zodiac = calculateZodiac(values.dob);
