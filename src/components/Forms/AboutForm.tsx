@@ -201,7 +201,7 @@ const AboutForm = forwardRef<FormikProps<AboutFormProps['initialValues']>, About
                     readOnly
                     disabled
                     value={values.horoscope}
-                    className="w-full rounded-lg border border-white/20 bg-white/6 px-3 py-2 text-right text-xs font-medium capitalize placeholder:text-white/30"
+                    className="w-full rounded-lg border border-white/20 bg-white/6 px-3 py-2 text-right text-xs font-medium capitalize placeholder:text-white/30 text-white/30"
                   />
                   <ErrorMessage
                     name="horoscope"
@@ -230,7 +230,7 @@ const AboutForm = forwardRef<FormikProps<AboutFormProps['initialValues']>, About
                     readOnly
                     disabled
                     value={values.zodiac}
-                    className="w-full rounded-lg border border-white/20 bg-white/6 px-3 py-2 text-right text-xs font-medium capitalize placeholder:text-white/30"
+                    className="w-full rounded-lg border border-white/20 bg-white/6 px-3 py-2 text-right text-xs font-medium capitalize placeholder:text-white/30 text-white/30"
                   />
                   <ErrorMessage
                     name="zodiac"
