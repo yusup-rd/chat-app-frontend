@@ -4,6 +4,7 @@ import Header from '@/components/Layout/Header';
 import { FaXmark } from 'react-icons/fa6';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const INTEREST_OPTIONS: Record<string, string> = {
   music: 'Music',
@@ -29,6 +30,7 @@ const INTEREST_OPTIONS: Record<string, string> = {
 };
 
 const Interests = () => {
+  const router = useRouter();
   const [selected, setSelected] = useState<string[]>([]);
 
   const handleSelect = (key: string) => {
@@ -45,6 +47,7 @@ const Interests = () => {
     toast.info(
       `Saved interests with values: ${selected.map((k) => INTEREST_OPTIONS[k]).join(', ')}`,
     );
+    router.push('/profile');
   };
 
   return (

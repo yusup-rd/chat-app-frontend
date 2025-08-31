@@ -3,7 +3,11 @@
 import { useRouter } from 'next/navigation';
 import { LuPencilLine } from 'react-icons/lu';
 
-const Interests = () => {
+interface InterestsProps {
+  interests?: string[];
+}
+
+const Interests = ({ interests = [] }: InterestsProps) => {
   const router = useRouter();
 
   return (
@@ -21,8 +25,22 @@ const Interests = () => {
         </button>
       </div>
 
-      {/* Empty info */}
-      <p className="text-sm font-medium opacity-50">Add in your interests to find a better match</p>
+      {interests.length === 0 ? (
+        <p className="text-sm font-medium opacity-50">
+          Add in your interests to find a better match
+        </p>
+      ) : (
+        <div className="flex flex-wrap items-center gap-2">
+          {interests.map((interest) => (
+            <span
+              key={interest}
+              className="rounded-full bg-white/6 px-4 py-2 text-sm font-semibold capitalize"
+            >
+              {interest}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

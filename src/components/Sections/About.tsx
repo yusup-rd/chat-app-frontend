@@ -7,8 +7,20 @@ import { FormikProps } from 'formik';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 
-const About = () => {
-  const [mode, setMode] = useState<'empty' | 'edit' | 'view'>('view');
+interface AboutProps {
+  dob?: number;
+  horoscope?: string;
+  zodiac?: string;
+  height?: number;
+  weight?: number;
+  age?: number;
+}
+
+const About = (props: AboutProps) => {
+  const hasData = !!(props.dob || props.horoscope || props.zodiac || props.height || props.weight);
+
+  const [mode, setMode] = useState<'edit' | 'view'>('view');
+
   const initialValues = {
     name: '',
     gender: '',
@@ -58,20 +70,61 @@ const About = () => {
         )}
       </div>
 
-      {/* Empty info */}
-      {mode === 'empty' && (
-        <p className="text-sm font-medium opacity-50">
-          Add in your bio to help others know you better
-        </p>
-      )}
-
       {/* Edit info */}
       {mode === 'edit' && (
         <AboutForm ref={formikRef} initialValues={initialValues} onSubmit={handleSubmit} />
       )}
 
+      {/* Empty info */}
+      {!hasData && (
+        <p className="text-sm font-medium opacity-50">
+          Add in your bio to help others know you better
+        </p>
+      )}
+
       {/* View info */}
-      {mode === 'view' && <p className="text-sm font-medium">Has info</p>}
+      {hasData && (
+        <div className="space-y-5 text-xs font-medium">
+          {props.dob && (
+            <div>
+              <span className="text-white/30">Birthday:</span>{' '}
+              <span>
+                {(() => {
+                  const date = new Date(props.dob! * 1000);
+                  const formatted = new Intl.DateTimeFormat('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  }).format(date);
+                  return `${formatted}${props.age ? ` (Age ${props.age})` : ''}`;
+                })()}
+              </span>
+            </div>
+          )}
+          {props.horoscope && (
+            <div>
+              <span className="text-white/30">Horoscope:</span>{' '}
+              <span>{props.horoscope.charAt(0).toUpperCase() + props.horoscope.slice(1)}</span>
+            </div>
+          )}
+          {props.zodiac && (
+            <div>
+              <span className="text-white/30">Zodiac:</span>{' '}
+              <span>{props.zodiac.charAt(0).toUpperCase() + props.zodiac.slice(1)}</span>
+            </div>
+          )}
+          {props.height && (
+            <div>
+              <span className="text-white/30">Height:</span> <span>{props.height} cm</span>
+            </div>
+          )}
+          {props.weight && (
+            <div>
+              <span className="text-white/30">Weight:</span> <span>{props.weight} kg</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
