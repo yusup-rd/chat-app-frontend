@@ -5,6 +5,9 @@ import { loginValidationSchema } from '@/utils/validation';
 import { useState } from 'react';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
 import { toast } from 'react-toastify';
+import { LoginRequest } from '@/types/auth';
+import { loginUser } from '@/api/auth';
+import { ErrorResponse } from '@/types/error';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,8 +17,18 @@ const LoginForm = () => {
     password: '',
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
-    toast.info('Login clicked with values: ' + JSON.stringify(values));
+  const handleSubmit = async (values: typeof initialValues) => {
+    try {
+      const payload: LoginRequest = {
+        usernameOrEmail: values.usernameOrEmail,
+        password: values.password,
+      };
+      await loginUser(payload);
+      toast.success('Login successful');
+    } catch (err) {
+      const error = err as ErrorResponse;
+      toast.error(error.message || 'Login failed');
+    }
   };
 
   return (

@@ -5,6 +5,9 @@ import { registerValidationSchema } from '@/utils/validation';
 import { useState } from 'react';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
 import { toast } from 'react-toastify';
+import { registerUser } from '@/api/auth';
+import { ErrorResponse } from '@/types/error';
+import { RegisterRequest } from '@/types/auth';
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,8 +20,19 @@ const RegisterForm = () => {
     confirmPassword: '',
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
-    toast.info('Register clicked with values: ' + JSON.stringify(values));
+  const handleSubmit = async (values: typeof initialValues) => {
+    try {
+      const payload: RegisterRequest = {
+        email: values.email,
+        username: values.username,
+        password: values.password,
+      };
+      await registerUser(payload);
+      toast.success('Registration successful');
+    } catch (err) {
+      const error = err as ErrorResponse;
+      toast.error(error.message || 'Registration failed');
+    }
   };
 
   return (
