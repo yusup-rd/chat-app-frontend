@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuth } from '@/providers/AuthProvider';
 
 const mockUsers = [
   { id: 1, name: 'Alice Johnson', avatar: '' },
@@ -11,20 +12,37 @@ const mockUsers = [
 ];
 
 const Home = () => {
+  const { isAuthenticated, loading, logout } = useAuth();
+
   return (
     <div className="radial-bg flex min-h-screen flex-col">
       {/* Header */}
       <header className="flex items-center justify-end rounded-b-lg px-6 py-4">
         <nav className="flex gap-4 text-sm font-medium">
-          <Link href="/login" className="duration-200 hover:text-white/50">
-            Login
-          </Link>
-          <Link href="/register" className="duration-200 hover:text-white/50">
-            Register
-          </Link>
-          <Link href="/profile" className="duration-200 hover:text-white/50">
-            Profile
-          </Link>
+          {loading ? (
+            <>
+              <div className="h-5 w-12 animate-pulse rounded bg-white/10" />
+              <div className="h-5 w-12 animate-pulse rounded bg-white/10" />
+            </>
+          ) : !isAuthenticated ? (
+            <>
+              <Link href="/login" className="duration-200 hover:text-white/50">
+                Login
+              </Link>
+              <Link href="/register" className="duration-200 hover:text-white/50">
+                Register
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/profile" className="duration-200 hover:text-white/50">
+                Profile
+              </Link>
+              <button onClick={logout} className="duration-200 hover:text-white/50" type="button">
+                Log out
+              </button>
+            </>
+          )}
         </nav>
       </header>
 

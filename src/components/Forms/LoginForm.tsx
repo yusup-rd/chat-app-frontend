@@ -8,8 +8,14 @@ import { toast } from 'react-toastify';
 import { LoginRequest } from '@/types/auth';
 import { loginUser } from '@/api/auth';
 import { ErrorResponse } from '@/types/error';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/AuthProvider';
 
 const LoginForm = () => {
+  const router = useRouter();
+
+  const { login } = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
@@ -23,8 +29,12 @@ const LoginForm = () => {
         usernameOrEmail: values.usernameOrEmail,
         password: values.password,
       };
-      await loginUser(payload);
-      toast.success('Login successful');
+      const response = await loginUser(payload);
+      if ('token' in response) {
+        login(response.token);
+        toast.success('Login successful');
+        router.push('/');
+      }
     } catch (err) {
       const error = err as ErrorResponse;
       toast.error(error.message || 'Login failed');

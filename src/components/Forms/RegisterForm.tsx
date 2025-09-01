@@ -8,8 +8,11 @@ import { toast } from 'react-toastify';
 import { registerUser } from '@/api/auth';
 import { ErrorResponse } from '@/types/error';
 import { RegisterRequest } from '@/types/auth';
+import { useRouter } from 'next/navigation';
 
 const RegisterForm = () => {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -29,6 +32,7 @@ const RegisterForm = () => {
       };
       await registerUser(payload);
       toast.success('Registration successful');
+      router.push('/login');
     } catch (err) {
       const error = err as ErrorResponse;
       toast.error(error.message || 'Registration failed');

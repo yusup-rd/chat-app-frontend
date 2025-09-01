@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ToastContainer } from 'react-toastify';
+import { AuthProvider } from '@/providers/AuthProvider';
+import Providers from './providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,14 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased">
-        <ToastContainer
-          autoClose={3000}
-          closeOnClick
-          pauseOnHover
-          draggable
-          style={{ fontFamily: 'inherit' }}
-        />
-        {children}
+        <Providers>
+          <AuthProvider>{children}</AuthProvider>
+        </Providers>
       </body>
     </html>
   );
