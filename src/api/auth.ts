@@ -1,7 +1,7 @@
 import { RegisterRequest, RegisterResponse, LoginRequest, LoginResponse } from '@/types/auth';
 import { ErrorResponse } from '@/types/error';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 async function handleResponse<T>(res: Response): Promise<T> {
   const data = await res.json();
