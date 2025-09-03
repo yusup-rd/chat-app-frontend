@@ -125,9 +125,12 @@ const Home = () => {
                         <span className="w-full truncate text-center font-semibold">
                           {user.name || `@${user.username}`}
                         </span>
-                        <button className="from-primary-gradient-1 to-primary-gradient-2 w-full cursor-pointer rounded bg-linear-to-r px-3 py-1 text-xs font-bold duration-200 hover:scale-105">
+                        <Link
+                          href={`/chat?userId=${user.id}`}
+                          className="from-primary-gradient-1 to-primary-gradient-2 block w-full cursor-pointer rounded bg-linear-to-r px-3 py-1 text-center text-xs font-bold duration-200 hover:scale-105"
+                        >
                           Chat
-                        </button>
+                        </Link>
                       </div>
                     ))
                   ) : (
