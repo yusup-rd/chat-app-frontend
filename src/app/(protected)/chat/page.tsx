@@ -185,9 +185,9 @@ const ChatPage = () => {
   const messageGroups = groupMessagesByDate(messages);
 
   return (
-    <div className="radial-bg flex min-h-screen flex-col">
+    <div className="radial-bg flex h-[100dvh] flex-col">
       {/* Chat Header */}
-      <header className="flex items-center gap-4 border-b border-white/10 bg-black/20 px-4 py-3">
+      <header className="flex flex-shrink-0 items-center gap-4 border-b border-white/10 bg-black/20 px-4 py-3">
         <button
           onClick={() => router.back()}
           className="cursor-pointer text-white/70 duration-200 hover:text-white"
@@ -218,7 +218,7 @@ const ChatPage = () => {
       </header>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
         {Object.keys(messageGroups).length === 0 && !isLoadingMessages ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="mb-4 text-4xl">💬</div>
@@ -275,7 +275,7 @@ const ChatPage = () => {
       </div>
 
       {/* Message Input */}
-      <div className="border-t border-white/10 bg-black/20 p-4">
+      <div className="flex-shrink-0 border-t border-white/10 bg-black/20 p-4">
         {/* Typing Indicator */}
         {typingUser && (
           <div className="mb-2 text-sm text-white/60">
