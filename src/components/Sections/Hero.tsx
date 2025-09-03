@@ -1,15 +1,22 @@
-import { getHoroscopeIcon, getZodiacIcon } from '../../utils/zodiacHoroscopeHelper';
+import {
+  calculateHoroscope,
+  calculateZodiac,
+  getHoroscopeIcon,
+  getZodiacIcon,
+} from '../../utils/zodiacHoroscopeHelper';
 
 interface HeroProps {
   username: string;
   pictureUrl?: string;
   age?: number;
+  dob?: string;
   gender?: string;
-  horoscope?: string;
-  zodiac?: string;
 }
 
-const Hero = ({ username, pictureUrl, age, gender, horoscope, zodiac }: HeroProps) => {
+const Hero = ({ username, pictureUrl, age, dob, gender }: HeroProps) => {
+  const horoscope = dob ? calculateHoroscope(dob) : '';
+  const zodiac = dob ? calculateZodiac(dob) : '';
+
   function renderHoroscopeIcon(horoscope?: string) {
     if (!horoscope) return null;
     const HoroscopeIcon = getHoroscopeIcon(horoscope);
