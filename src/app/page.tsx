@@ -3,16 +3,44 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/providers/AuthProvider';
-
-const mockUsers = [
-  { id: 1, name: 'Alice Johnson', avatar: '' },
-  { id: 2, name: 'Bob Williams', avatar: '' },
-  { id: 3, name: 'Charlie Kim', avatar: '' },
-  { id: 4, name: 'Diana Lopez', avatar: '' },
-];
+import { useEffect, useState } from 'react';
+import { getAllProfiles } from '@/api/profile';
+import { UserProfile } from '@/types/profile';
+import { ErrorResponse } from '@/types/error';
+import { toast } from 'react-toastify';
+import FeedSkeleton from '@/components/Skeletons/FeedSkeleton';
 
 const Home = () => {
   const { isAuthenticated, loading, logout } = useAuth();
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      fetchUsers();
+    }
+  }, [isAuthenticated, loading]);
+
+  const fetchUsers = async () => {
+    try {
+      setLoadingUsers(true);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+      const response = await getAllProfiles(token);
+      if (Array.isArray(response)) {
+        setUsers(response);
+      } else {
+        throw response as ErrorResponse;
+      }
+    } catch (error) {
+      const errorResponse = error as ErrorResponse;
+      toast.error(errorResponse.message || 'Failed to fetch users');
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
 
   return (
     <div className="radial-bg flex min-h-screen flex-col">
@@ -48,41 +76,70 @@ const Home = () => {
 
       {/* Main Section */}
       <main className="my-10 flex flex-1 flex-col items-center justify-center px-5">
-        <h1 className="gold-text mb-2 text-3xl font-bold drop-shadow-lg">Welcome to Chat App!</h1>
-        <p className="mb-8 max-w-md text-center text-white/80 italic">
-          Connect with friends, meet new people, and start conversations instantly. Whether
-          you&apos;re here to chat casually or make lasting connections, our chat app is built for
-          you.
-        </p>
+        {loading ? (
+          <>
+            {/* Loading skeleton for title and description */}
+            <div className="mb-2 h-9 w-80 animate-pulse rounded bg-white/20" />
+            <div className="mb-8 h-20 w-96 animate-pulse rounded bg-white/20" />
+            <div className="grid w-full max-w-md grid-cols-2 gap-4 sm:grid-cols-3">
+              <FeedSkeleton count={6} />
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="gold-text mb-2 text-3xl font-bold drop-shadow-lg">
+              Welcome to Chat App!
+            </h1>
+            <p className="mb-8 max-w-md text-center text-white/80 italic">
+              Connect with friends, meet new people, and start conversations instantly. Whether
+              you&apos;re here to chat casually or make lasting connections, our chat app is built
+              for you.
+            </p>
 
-        {/* Feed Section */}
-        <div className="flex items-center justify-center">
-          <div className="grid w-full max-w-md grid-cols-2 gap-4 sm:grid-cols-3">
-            {mockUsers.map((user) => (
-              <div
-                key={user.id}
-                className="flex flex-col items-center justify-center gap-5 rounded-lg bg-white/10 p-3"
-              >
-                <Image
-                  src={user.avatar || '/avatars/avatar-placeholder.avif'}
-                  alt={user.name}
-                  width={80}
-                  height={80}
-                  className="shrink-0 rounded-full"
-                />
-                <span className="w-full truncate text-center font-semibold">{user.name}</span>
-                <div className="flex w-full items-center justify-between gap-2">
-                  <button className="flex-1 cursor-pointer rounded bg-white/30 px-3 py-1 text-xs font-bold duration-200 hover:scale-105">
-                    View
-                  </button>
-                  <button className="from-primary-gradient-1 to-primary-gradient-2 flex-1 cursor-pointer rounded bg-linear-to-r px-3 py-1 text-xs font-bold duration-200 hover:scale-105">
-                    Chat
-                  </button>
+            {/* Conditional Content Based on Authentication */}
+            {!isAuthenticated ? (
+              <p className="mb-6 text-center text-white/70">
+                Please log in to see available users and start chatting!
+              </p>
+            ) : (
+              /* Feed Section - Only show when authenticated */
+              <div className="flex items-center justify-center">
+                <div className="grid w-full max-w-md grid-cols-2 gap-4 sm:grid-cols-3">
+                  {loadingUsers ? (
+                    <FeedSkeleton count={6} />
+                  ) : users.length > 0 ? (
+                    users.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex flex-col items-center justify-center gap-5 rounded-lg bg-white/10 p-3"
+                      >
+                        <div className="size-20 overflow-hidden rounded-full">
+                          <Image
+                            src={user.avatar || '/avatars/avatar-placeholder.avif'}
+                            alt={user.name || user.username}
+                            width={80}
+                            height={80}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <span className="w-full truncate text-center font-semibold">
+                          {user.name || `@${user.username}`}
+                        </span>
+                        <button className="from-primary-gradient-1 to-primary-gradient-2 w-full cursor-pointer rounded bg-linear-to-r px-3 py-1 text-xs font-bold duration-200 hover:scale-105">
+                          Chat
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-2 text-center text-white/70 sm:col-span-3">
+                      No other users found. Be the first to create a profile!
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            )}
+          </>
+        )}
       </main>
     </div>
   );

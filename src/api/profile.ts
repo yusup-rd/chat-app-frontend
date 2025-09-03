@@ -5,6 +5,7 @@ import {
   PostProfileResponse,
   PutProfileRequest,
   PutProfileResponse,
+  UserProfile,
 } from '@/types/profile';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -26,6 +27,17 @@ export async function getProfile(token: string): Promise<GetProfileResponse | Er
     },
   });
   return handleResponse<GetProfileResponse>(res);
+}
+
+export async function getAllProfiles(token: string): Promise<UserProfile[] | ErrorResponse> {
+  const res = await fetch(`${API_URL}/getAllProfiles`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse<UserProfile[]>(res);
 }
 
 export async function createProfile(
