@@ -11,6 +11,7 @@ import { UserProfile } from '@/types/profile';
 import { toast } from 'react-toastify';
 import { ErrorResponse } from '@/types/error';
 import { calculateAge } from '@/utils/date';
+import ProfilePageSkeleton from '@/components/Skeletons/ProfilePageSkeleton';
 
 const Profile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -66,18 +67,28 @@ const Profile = () => {
     <div>
       <Header username={profile?.username || ''} />
 
-      {loading && <div className="mx-2 p-4 md:mx-auto md:max-w-xl">Loading...</div>}
-      {error && <div className="mx-2 p-4 md:mx-auto md:max-w-xl">Error: {error}</div>}
+      {loading && (
+        <div className="mx-2 p-4 md:mx-auto md:max-w-xl">
+          <ProfilePageSkeleton />
+        </div>
+      )}
+      {error && (
+        <div className="mx-2 p-4 text-center text-sm font-semibold text-red-500 md:mx-auto md:max-w-xl">
+          Error: {error}
+        </div>
+      )}
       {!loading && !error && !profile && (
-        <div className="mx-2 p-4 md:mx-auto md:max-w-xl">No profile data found.</div>
+        <div className="mx-2 p-4 text-center font-semibold text-gray-500 md:mx-auto md:max-w-xl">
+          No profile data found.
+        </div>
       )}
 
       {!loading && !error && profile && (
         <div className="mx-2 mb-10 space-y-5 md:mx-auto md:max-w-xl">
-          <Hero 
-            username={profile.username} 
-            dob={profile.dob} 
-            age={age} 
+          <Hero
+            username={profile.username}
+            dob={profile.dob}
+            age={age}
             gender={profile.gender}
             avatar={profile.avatar}
           />
