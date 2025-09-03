@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 interface HeaderProps {
   username?: string;
   onSave?: () => void;
+  isLoading?: boolean;
 }
 
-const Header = ({ username, onSave }: HeaderProps) => {
+const Header = ({ username, onSave, isLoading }: HeaderProps) => {
   const router = useRouter();
 
   return (
@@ -32,8 +33,12 @@ const Header = ({ username, onSave }: HeaderProps) => {
       {/* Save Button */}
       <div className="flex flex-1 justify-end">
         {onSave && (
-          <button className="cyan-text cursor-pointer text-sm font-semibold" onClick={onSave}>
-            Save
+          <button 
+            className={`cursor-pointer text-sm font-semibold ${isLoading ? 'text-white/50' : 'cyan-text'}`}
+            onClick={onSave}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save'}
           </button>
         )}
       </div>
