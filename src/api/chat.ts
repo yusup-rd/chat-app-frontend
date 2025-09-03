@@ -1,6 +1,5 @@
-import { SendMessageRequest, SendMessageResponse } from '@/types/chat';
+import { SendMessageRequest, SendMessageResponse, Message } from '@/types/chat';
 import { ErrorResponse } from '@/types/error';
-import { Message } from 'yup';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
