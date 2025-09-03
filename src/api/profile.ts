@@ -40,6 +40,17 @@ export async function getAllProfiles(token: string): Promise<UserProfile[] | Err
   return handleResponse<UserProfile[]>(res);
 }
 
+export async function getUserProfile(token: string, userId: string): Promise<UserProfile | ErrorResponse> {
+  const res = await fetch(`${API_URL}/getUserProfile/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse<UserProfile>(res);
+}
+
 export async function createProfile(
   token: string,
   data: PostProfileRequest,
