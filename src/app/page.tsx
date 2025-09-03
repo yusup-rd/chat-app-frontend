@@ -68,7 +68,7 @@ const Home = () => {
       if (!token) return;
 
       const conversations = await getChatList(token);
-      const hasUnread = conversations.some((conv) => conv.unreadCount > 0);
+      const hasUnread = conversations.some((c) => c.unreadCount > 0);
       setHasUnreadMessages(hasUnread);
     } catch (error) {
       // Silently fail - unread indicator is not critical
