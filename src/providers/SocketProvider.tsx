@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthProvider';
-import { Message } from 'yup';
+import { Message } from '@/types/chat';
 
 interface SocketContextType {
   socket: Socket | null;
