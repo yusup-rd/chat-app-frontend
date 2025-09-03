@@ -8,6 +8,7 @@ export interface UserProfile {
   height?: number;
   weight?: number;
   interests?: string[];
+  avatar?: string;
 }
 
 export type GetProfileResponse = UserProfile;
@@ -18,6 +19,7 @@ export interface PostProfileRequest {
   gender?: string;
   height?: number;
   weight?: number;
+  avatar?: string;
 }
 
 export interface PostProfileResponse {
@@ -31,6 +33,7 @@ export interface PutProfileRequest {
   height?: number;
   weight?: number;
   interests?: string[];
+  avatar?: string;
 }
 
 export interface PutProfileResponse {

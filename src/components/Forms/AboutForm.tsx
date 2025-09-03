@@ -20,13 +20,16 @@ type AboutFormProps = {
     gender?: string;
     height?: number;
     weight?: number;
+    avatar?: string;
   }) => void;
   onCancel: () => void;
 };
 
 const AboutForm = ({ profile, onSuccess, onCancel }: AboutFormProps) => {
   const [genderOpen, setGenderOpen] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState<string | undefined>(undefined);
+  const [avatarPreview, setAvatarPreview] = useState<string | undefined>(
+    profile.avatar || undefined,
+  );
 
   const initialValues = {
     name: profile.name || '',
@@ -36,7 +39,7 @@ const AboutForm = ({ profile, onSuccess, onCancel }: AboutFormProps) => {
     zodiac: profile.dob ? calculateZodiac(profile.dob) : '',
     height: profile.height ? String(profile.height) : '',
     weight: profile.weight ? String(profile.weight) : '',
-    avatarUrl: undefined,
+    avatar: profile.avatar || '',
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -49,6 +52,7 @@ const AboutForm = ({ profile, onSuccess, onCancel }: AboutFormProps) => {
         dob: values.dob || undefined,
         height: values.height ? Number(values.height) : undefined,
         weight: values.weight ? Number(values.weight) : undefined,
+        avatar: values.avatar || undefined,
       };
 
       const hasExistingData = !!(
@@ -56,7 +60,8 @@ const AboutForm = ({ profile, onSuccess, onCancel }: AboutFormProps) => {
         profile.gender ||
         profile.dob ||
         profile.height ||
-        profile.weight
+        profile.weight ||
+        profile.avatar
       );
 
       if (hasExistingData) {
@@ -138,7 +143,7 @@ const AboutForm = ({ profile, onSuccess, onCancel }: AboutFormProps) => {
                           const reader = new FileReader();
                           reader.onloadend = () => {
                             setAvatarPreview(reader.result as string);
-                            setFieldValue('avatarUrl', reader.result as string);
+                            setFieldValue('avatar', reader.result as string);
                           };
                           reader.readAsDataURL(file);
                         }
@@ -153,7 +158,7 @@ const AboutForm = ({ profile, onSuccess, onCancel }: AboutFormProps) => {
                       aria-label="Remove image"
                       onClick={() => {
                         setAvatarPreview(undefined);
-                        setFieldValue('avatarUrl', undefined);
+                        setFieldValue('avatar', undefined);
                         const input = document.getElementById('avatar-upload') as HTMLInputElement;
                         if (input) input.value = '';
                       }}

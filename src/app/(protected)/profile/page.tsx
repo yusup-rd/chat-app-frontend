@@ -25,6 +25,7 @@ const Profile = () => {
     gender?: string;
     height?: number;
     weight?: number;
+    avatar?: string;
   }) => {
     if (profile) {
       const updatedProfile = { ...profile, ...updatedData };
@@ -73,7 +74,13 @@ const Profile = () => {
 
       {!loading && !error && profile && (
         <div className="mx-2 mb-10 space-y-5 md:mx-auto md:max-w-xl">
-          <Hero username={profile.username} dob={profile.dob} age={age} gender={profile.gender} />
+          <Hero 
+            username={profile.username} 
+            dob={profile.dob} 
+            age={age} 
+            gender={profile.gender}
+            avatar={profile.avatar}
+          />
 
           {aboutSectionState === 'view' ? (
             <About
