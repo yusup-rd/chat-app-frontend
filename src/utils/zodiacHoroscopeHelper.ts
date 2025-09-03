@@ -97,6 +97,10 @@ function parseDate(input: string | Date): Date | null {
   if (typeof input === 'string') {
     const iso = /^\d{4}-\d{2}-\d{2}$/;
     if (iso.test(input)) return new Date(input);
+
+    const isoDateTime = /^\d{4}-\d{2}-\d{2}T/;
+    if (isoDateTime.test(input)) return new Date(input);
+
     const parts = input.split(/\D+/).map(Number);
     if (parts.length === 3) return new Date(parts[2], parts[1] - 1, parts[0]);
   }
