@@ -1,4 +1,4 @@
-import { SendMessageRequest, SendMessageResponse, Message } from '@/types/chat';
+import { SendMessageRequest, SendMessageResponse, Message, ChatConversation } from '@/types/chat';
 import { ErrorResponse } from '@/types/error';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -35,4 +35,15 @@ export async function viewMessages(token: string, userId: string): Promise<Messa
     },
   });
   return handleResponse<Message[]>(res);
+}
+
+export async function getChatList(token: string): Promise<ChatConversation[]> {
+  const res = await fetch(`${API_URL}/chat/conversations`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse<ChatConversation[]>(res);
 }

@@ -18,3 +18,13 @@ export interface SendMessageResponse {
   message: string;
   data: Message;
 }
+
+export interface ChatConversation {
+  userId: string;
+  username: string;
+  name: string;
+  avatar?: string;
+  lastMessage: string;
+  lastMessageTime: string;
+  unreadCount: number;
+}

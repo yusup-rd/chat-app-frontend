@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthProvider';
 import { Message } from '@/types/chat';
@@ -9,15 +9,17 @@ interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
   onlineUsers: Set<string>;
+  typingUsers: Set<string>;
   isUserOnline: (userId: string) => boolean;
+  isUserTyping: (userId: string) => boolean;
   sendMessage: (message: string, receiverId: string) => void;
   joinChat: (otherUserId: string) => void;
   startTyping: (receiverId: string) => void;
   stopTyping: (receiverId: string) => void;
-  onNewMessage: (callback: (message: Message) => void) => void;
-  onTyping: (callback: (data: { userId: string; isTyping: boolean }) => void) => void;
-  onUserOnline: (callback: (userId: string) => void) => void;
-  onUserOffline: (callback: (userId: string) => void) => void;
+  onNewMessage: (callback: (message: Message) => void) => () => void;
+  onTyping: (callback: (data: { userId: string; isTyping: boolean }) => void) => () => void;
+  onUserOnline: (callback: (userId: string) => void) => () => void;
+  onUserOffline: (callback: (userId: string) => void) => () => void;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -39,6 +41,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
+  const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -66,6 +69,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         newSocket.on('disconnect', () => {
           setIsConnected(false);
           setOnlineUsers(new Set());
+          setTypingUsers(new Set());
           console.log('Disconnected from server');
         });
 
@@ -78,6 +82,28 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
             const newSet = new Set(prev);
             newSet.delete(userId);
             return newSet;
+          });
+          setTypingUsers((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(userId);
+            return newSet;
+          });
+        });
+
+        newSocket.on('userTyping', (data: { userId: string; isTyping: boolean }) => {
+          setTypingUsers((prev) => {
+            const newSet = new Set(prev);
+            const hasUser = newSet.has(data.userId);
+
+            if (data.isTyping && !hasUser) {
+              newSet.add(data.userId);
+              return newSet;
+            } else if (!data.isTyping && hasUser) {
+              newSet.delete(data.userId);
+              return newSet;
+            }
+
+            return prev;
           });
         });
 
@@ -101,89 +127,125 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
-  const sendMessage = (message: string, receiverId: string) => {
-    if (socket && isConnected) {
-      socket.emit('sendMessage', {
-        content: message,
-        receiverId: receiverId,
-      });
-    }
-  };
-
-  const joinChat = (otherUserId: string) => {
-    if (socket && isConnected) {
-      socket.emit('joinChat', { otherUserId });
-    }
-  };
-
-  const startTyping = (receiverId: string) => {
-    if (socket && isConnected) {
-      socket.emit('typing', { receiverId, isTyping: true });
-
-      // Clear existing timeout
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
+  const sendMessage = useCallback(
+    (message: string, receiverId: string) => {
+      if (socket && isConnected) {
+        socket.emit('sendMessage', {
+          content: message,
+          receiverId: receiverId,
+        });
       }
+    },
+    [socket, isConnected],
+  );
 
-      // Auto-stop typing after 3 seconds of inactivity
-      typingTimeoutRef.current = setTimeout(() => {
-        stopTyping(receiverId);
-      }, 3000);
-    }
-  };
-
-  const stopTyping = (receiverId: string) => {
-    if (socket && isConnected) {
-      socket.emit('typing', { receiverId, isTyping: false });
-
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-        typingTimeoutRef.current = null;
+  const joinChat = useCallback(
+    (otherUserId: string) => {
+      if (socket && isConnected) {
+        socket.emit('joinChat', { otherUserId });
       }
-    }
-  };
+    },
+    [socket, isConnected],
+  );
 
-  const onNewMessage = (callback: (message: Message) => void) => {
-    if (socket) {
-      socket.on('newMessage', callback);
-      return () => socket.off('newMessage', callback);
-    }
-    return () => {};
-  };
+  const stopTyping = useCallback(
+    (receiverId: string) => {
+      if (socket && isConnected) {
+        socket.emit('typing', { receiverId, isTyping: false });
 
-  const onTyping = (callback: (data: { userId: string; isTyping: boolean }) => void) => {
-    if (socket) {
-      socket.on('userTyping', callback);
-      return () => socket.off('userTyping', callback);
-    }
-    return () => {};
-  };
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+          typingTimeoutRef.current = null;
+        }
+      }
+    },
+    [socket, isConnected],
+  );
 
-  const onUserOnline = (callback: (userId: string) => void) => {
-    if (socket) {
-      socket.on('userOnline', callback);
-      return () => socket.off('userOnline', callback);
-    }
-    return () => {};
-  };
+  const startTyping = useCallback(
+    (receiverId: string) => {
+      if (socket && isConnected) {
+        socket.emit('typing', { receiverId, isTyping: true });
 
-  const onUserOffline = (callback: (userId: string) => void) => {
-    if (socket) {
-      socket.on('userOffline', callback);
-      return () => socket.off('userOffline', callback);
-    }
-    return () => {};
-  };
+        // Clear existing timeout
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
 
-  const isUserOnline = (userId: string): boolean => {
-    return onlineUsers.has(userId);
-  };
+        // Auto-stop typing after 3 seconds of inactivity
+        typingTimeoutRef.current = setTimeout(() => {
+          stopTyping(receiverId);
+        }, 3000);
+      }
+    },
+    [socket, isConnected, stopTyping],
+  );
+
+  const onNewMessage = useCallback(
+    (callback: (message: Message) => void) => {
+      if (socket) {
+        socket.on('newMessage', callback);
+        return () => socket.off('newMessage', callback);
+      }
+      return () => {};
+    },
+    [socket],
+  );
+
+  const onTyping = useCallback(
+    (callback: (data: { userId: string; isTyping: boolean }) => void) => {
+      if (socket) {
+        socket.on('userTyping', callback);
+        return () => socket.off('userTyping', callback);
+      }
+      return () => {};
+    },
+    [socket],
+  );
+
+  const onUserOnline = useCallback(
+    (callback: (userId: string) => void) => {
+      if (socket) {
+        socket.on('userOnline', callback);
+        return () => socket.off('userOnline', callback);
+      }
+      return () => {};
+    },
+    [socket],
+  );
+
+  const onUserOffline = useCallback(
+    (callback: (userId: string) => void) => {
+      if (socket) {
+        socket.on('userOffline', callback);
+        return () => socket.off('userOffline', callback);
+      }
+      return () => {};
+    },
+    [socket],
+  );
+
+  const isUserOnline = useCallback(
+    (userId: string): boolean => {
+      return onlineUsers.has(userId);
+    },
+    [onlineUsers],
+  );
+
+  const isUserTyping = useCallback(
+    (userId: string): boolean => {
+      return typingUsers.has(userId);
+    },
+    [typingUsers],
+  );
 
   const value: SocketContextType = {
     socket,
     isConnected,
     onlineUsers,
+    typingUsers,
     isUserOnline,
+    isUserTyping,
     sendMessage,
     joinChat,
     startTyping,

@@ -3,23 +3,43 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/providers/AuthProvider';
+import { useSocket } from '@/providers/SocketProvider';
 import { useEffect, useState } from 'react';
 import { getAllProfiles } from '@/api/profile';
+import { getChatList } from '@/api/chat';
 import { UserProfile } from '@/types/profile';
 import { ErrorResponse } from '@/types/error';
 import { toast } from 'react-toastify';
 import FeedSkeleton from '@/components/Skeletons/FeedSkeleton';
+import { AiFillMessage } from 'react-icons/ai';
+import { FaUser } from 'react-icons/fa6';
+import { IoLogOut } from 'react-icons/io5';
 
 const Home = () => {
   const { isAuthenticated, loading, logout } = useAuth();
+  const { onNewMessage } = useSocket();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated && !loading) {
       fetchUsers();
+      checkUnreadMessages();
     }
   }, [isAuthenticated, loading]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const handleNewMessage = () => {
+      setHasUnreadMessages(true);
+    };
+    const unsubscribe = onNewMessage(handleNewMessage);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [isAuthenticated, onNewMessage]);
 
   const fetchUsers = async () => {
     try {
@@ -39,6 +59,20 @@ const Home = () => {
       toast.error(errorResponse.message || 'Failed to fetch users');
     } finally {
       setLoadingUsers(false);
+    }
+  };
+
+  const checkUnreadMessages = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const conversations = await getChatList(token);
+      const hasUnread = conversations.some((conv) => conv.unreadCount > 0);
+      setHasUnreadMessages(hasUnread);
+    } catch (error) {
+      // Silently fail - unread indicator is not critical
+      console.error('Failed to check unread messages:', error);
     }
   };
 
@@ -63,11 +97,21 @@ const Home = () => {
             </>
           ) : (
             <>
-              <Link href="/profile" className="duration-200 hover:text-white/50">
-                Profile
+              <Link href="/conversations" className="relative duration-200 hover:text-white/50">
+                <AiFillMessage className="size-5" />
+                {hasUnreadMessages && (
+                  <div className="absolute -top-1 -right-1 size-2 rounded-full bg-red-500"></div>
+                )}
               </Link>
-              <button onClick={logout} className="duration-200 hover:text-white/50" type="button">
-                Log out
+              <Link href="/profile" className="duration-200 hover:text-white/50">
+                <FaUser className="size-5" />
+              </Link>
+              <button
+                onClick={logout}
+                className="cursor-pointer duration-200 hover:text-white/50"
+                type="button"
+              >
+                <IoLogOut className="size-5" />
               </button>
             </>
           )}
@@ -96,13 +140,11 @@ const Home = () => {
               for you.
             </p>
 
-            {/* Conditional Content Based on Authentication */}
             {!isAuthenticated ? (
               <p className="mb-6 text-center text-white/70">
                 Please log in to see available users and start chatting!
               </p>
             ) : (
-              /* Feed Section - Only show when authenticated */
               <div className="flex items-center justify-center">
                 <div className="grid w-full max-w-md grid-cols-2 gap-4 sm:grid-cols-3">
                   {loadingUsers ? (

@@ -145,7 +145,7 @@ const ChatPage = () => {
       socket.off('messageReceived', handleMessageReceived);
       socket.off('userTyping', handleTyping);
     };
-  }, [partnerId, socket, setTypingUser]);
+  }, [partnerId, socket]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
