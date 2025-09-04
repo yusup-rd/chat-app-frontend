@@ -39,12 +39,14 @@ const ChatPage = () => {
 
   const [isLoadingPartner, setIsLoadingPartner] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(!!partnerId);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isLoading = loading || isLoadingPartner || isLoadingMessages;
 
   // Redirect if no partner ID
   useEffect(() => {
     if (!partnerId) {
       setIsLoadingMessages(false);
+      setIsInitialLoad(false);
       router.push('/');
       toast.error('No chat partner specified');
     } else {
@@ -100,9 +102,15 @@ const ChatPage = () => {
 
         setMessages(fetchedMessages);
         joinChat(partnerId);
+
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+          setIsInitialLoad(false);
+        }, 0);
       } catch (error) {
         const errorResponse = error as ErrorResponse;
         toast.error(errorResponse.message || 'Failed to load messages');
+        setIsInitialLoad(false);
       } finally {
         setIsLoadingMessages(false);
       }
@@ -149,8 +157,10 @@ const ChatPage = () => {
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (!isInitialLoad) {
+      scrollToBottom();
+    }
+  }, [messages, isInitialLoad]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
