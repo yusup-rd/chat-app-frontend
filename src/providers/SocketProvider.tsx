@@ -45,9 +45,19 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    if (socket) {
+      console.log('Cleaning up existing socket connection');
+      socket.disconnect();
+      setSocket(null);
+      setIsConnected(false);
+      setOnlineUsers(new Set());
+      setTypingUsers(new Set());
+    }
+
     if (isAuthenticated) {
       const token = localStorage.getItem('token');
       if (token) {
+        console.log('Creating new socket connection');
         const newSocket = io(
           process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000',
           {
@@ -114,16 +124,13 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         setSocket(newSocket);
 
         return () => {
+          console.log('Cleanup: Disconnecting socket');
           newSocket.disconnect();
         };
       }
-    } else {
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
-        setIsConnected(false);
-      }
     }
+
+    return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
