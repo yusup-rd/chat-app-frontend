@@ -83,9 +83,9 @@ Navigate to http://localhost:3000/register and create 2-3 test users:
 **Example users:**
 
 ```
-User 1: john@example.com / password123
-User 2: jane@example.com / password123
-User 3: bob@example.com / password123
+User 1: john@example.com / john / password123
+User 2: jane@example.com / jane / password123
+User 3: bob@example.com / bob / password123
 ```
 
 ### 2. Login with User Credentials
@@ -219,21 +219,39 @@ Socket.IO: ws://localhost:5000
 
 _Clean, modern login and registration forms_
 
+<img width="263" height="576" alt="image" src="https://github.com/user-attachments/assets/1fb9e1ff-acb3-4a72-9678-5ff390024abf" />
+<img width="267" height="580" alt="image" src="https://github.com/user-attachments/assets/628ebee5-7650-4530-83ba-3e3bc463b6a5" />
+
+
 ### Homepage Feed
 
 _Discover users with profile cards and chat buttons_
+
+<img width="261" height="577" alt="image" src="https://github.com/user-attachments/assets/ad614acf-c511-4e5e-97ee-db0bae889a62" />
 
 ### Profile Management
 
 _Complete profile setup with interests_
 
+<img width="271" height="583" alt="image" src="https://github.com/user-attachments/assets/0f609c81-d863-444e-a5b0-4ea0ac31e211" />
+<img width="271" height="583" alt="image" src="https://github.com/user-attachments/assets/22d80abd-5afc-483f-bf81-b7190161a3fb" />
+<img width="267" height="581" alt="image" src="https://github.com/user-attachments/assets/0512b353-98d0-481c-a063-3b3f7cbb1581" />
+<img width="267" height="578" alt="image" src="https://github.com/user-attachments/assets/b05ebe33-d747-4387-b3cf-f988764d1b4d" />
+<img width="267" height="583" alt="image" src="https://github.com/user-attachments/assets/4e7b4716-5f18-4880-b7bc-2025cbfabd7e" />
+<img width="272" height="580" alt="image" src="https://github.com/user-attachments/assets/875d76ac-2d23-4bfc-b6f3-34b8e384c643" />
+<img width="267" height="582" alt="image" src="https://github.com/user-attachments/assets/f02c1a5d-81ba-4d5b-9e02-9969f7653dfb" />
+
 ### Real-time Chat
 
 _Instant messaging with typing indicators_
 
+<img width="270" height="583" alt="image" src="https://github.com/user-attachments/assets/1103884f-4ae1-4bd1-836d-c630e0661da3" />
+
 ### Conversations List
 
 _Chat history with unread message badges_
+
+<img width="270" height="582" alt="image" src="https://github.com/user-attachments/assets/e032f34d-5c0e-4aeb-9fb1-f7560de3922c" />
 
 ## 🚀 Production Build
 
